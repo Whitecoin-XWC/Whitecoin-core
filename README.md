@@ -49,13 +49,19 @@ Compile the whitecoin-xwc at ubuntu-18.04, please refer blow command line:
 * build whitecoin-xwc now
 
   ```shell
+  $> git clone --recursive git@github.com:Whitecoin-XWC/Whitecoin-core.git
+  $> cd Whitecoin-core
   $> chmod +x build.sh
   $> ./build.sh
   
   #Please wait the compile....
   ```
 
-  
+* executable file `xwc_cli & xwc_node`
+
+  > If the compile is success, you can found the executable files `xwc_cli & xwc_node` under the folder output.
+
+
 
 # Object
 
