@@ -38,7 +38,6 @@ cmake -DCMAKE_BUILD_TYPE=Release .
 make
 
 #check the compile is complete
-rm -rf output/*
 if [ ! -f programs/cli_wallet/cli_wallet ];
 then
     echo 'Compile the xwc_cli is failed, please contract the developer or whitecoin'
@@ -51,8 +50,15 @@ then
     exit 0
 fi
 
+#copy files
+rm -rf output
+mkdir output
+
 cp programs/cli_wallet/cli_wallet output/xwc_cli
+strip output/xwc_cli
+
 cp programs/witness_node/witness_node output/xwc_node
+strip output/xwc_node
 echo '#################################################################'
 echo '#Success Pelease get the executable file from directory: output  '
 echo '#################################################################'
