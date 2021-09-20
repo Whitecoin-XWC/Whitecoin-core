@@ -81,7 +81,7 @@ namespace graphene { namespace wallet {
 
    api_documentation::api_documentation()
    {
-   #ifndef __APPLE__
+   #if 0
       fc::api<wallet_api> tmp;
       detail::help_visitor visitor;
       tmp->visit(visitor);

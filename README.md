@@ -14,31 +14,55 @@
   </p>
 </p>
 
----
-
-## How to try 
-
-Run docker container (will be deleted after shutdown):
-
-```console
-$ docker run --rm -it  /bin/sh
-```
-
-## How to install
-
-
-## How to contribute
-
-
-## How to get support
-
 
 ## Licence
 
 [MIT](LICENSE)
 
-# Whitecoin-core
-Whitecoin core aims to link all valued blockchain network together.
+## Whitecoin-core
+
+[Whitecoin](https://whitecoin.info/) is first to adopt Multi Tunnel Blockchain Communication Protocol (MTBCP), making the inter-blockchain communication protocol a reality.
+
+
+
+## How to compile
+
+#### ubuntu-18.04
+
+Compile the whitecoin-xwc at ubuntu-18.04, please refer blow command line:
+
+* update your compile machine
+
+  ```shell
+  $> sudo apt-get -f install
+  $> sudo apt-get update
+  ```
+
+* install some required library
+
+  ```shell
+  $> sudo apt-get install cmake make libbz2-dev libdb++-dev libdb-dev libssl-dev openssl autoconf
+  $> sudo apt-get install libreadline-dev --fix-missing
+  $> sudo apt-get install g++
+  ```
+
+* build whitecoin-xwc now
+
+  ```shell
+  $> git clone --recursive git@github.com:Whitecoin-XWC/Whitecoin-core.git
+  $> cd Whitecoin-core
+  $> git checkout master
+  $> chmod +x build.sh
+  $> ./build.sh
+  
+  #Please wait the compile....
+  ```
+
+* executable file `xwc_cli & xwc_node`
+
+  > If the compile is success, you can found the executable files `xwc_cli & xwc_node` under the folder output.
+
+
 
 # Object
 
