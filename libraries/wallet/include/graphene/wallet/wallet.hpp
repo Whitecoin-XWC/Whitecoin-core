@@ -40,7 +40,7 @@ namespace fc
    void from_variant(const variant &var, account_multi_index_type &vo);
 }
 
-#define CLI_WALLET_VERSION "1.3.3"
+#define CLI_WALLET_VERSION "1.3.4"
 
 namespace graphene { namespace wallet {
 
