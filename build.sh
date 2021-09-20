@@ -89,13 +89,12 @@ then
 fi
 export PATH=$ETH_CROSSCHAIN_PROJECT:$PATH
 cd ..
-exit 0
 
 #########################################################################################################################
 #compile whitecoin source code now
 chmod +x libraries/fc/vendor/secp256k1-zkp/autogen.sh
 cmake -DCMAKE_BUILD_TYPE=Release .
-make -j 20
+make -j 4
 
 #########################################################################################################################
 #check the compile is complete
