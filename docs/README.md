@@ -25,17 +25,18 @@ cmake -DBOOST_ROOT=~/boost160 .
 * [CLI Wallet Cookbook](wallet/CLI-Wallet-Cookbook)
 * [Wallet Login Protocol](wallet/Wallet_Login_Protocol)
 * [Wallet Merchant Protocol](wallet/Wallet_Merchant_Protocol)
-* [Wallet Argument Format](Wallet Argument Format)
-* [Wallet 2-Factor Authentication Protocol](Wallet 2-Factor Authentication Protocol)
+* [Wallet Argument Format](wallet/Wallet_Argument_Format)
+* [Wallet 2-Factor Authentication Protocol](wallet/Wallet_2-Factor_Authentication_Protocol)
 
 ### Contributing
-* [General API](API)
-* [Websocket Subscriptions](Websocket Subscriptions)
-* [Testing](Testing)
+* [General API](dev/API)
+* [Websocket Subscriptions](misc/Websocket-Subscriptions)
+* [Testing](test/Testing)
 
 ### Exchanges
-* [Monitoring Accounts](Monitoring accounts)
+* [Monitoring Accounts](misc/Monitoring-accounts)
 
 ### Witnesses
-* [How to become an active witness in BitShares 2.0](How to become an active witness in BitShares 2.0)
-* [How to setup your witness for test net (Ubuntu 14.04)](How to setup your witness for test net (Ubuntu 14.04))
+* [How to become an active witness in BitShares 2.0](witness/How_To_become_an_active_witness_BitShares_2_0)
+* [How to setup your witness for test net (Ubuntu 14.04)](How_To_setup_your_witness_testnet_Ubuntu_14_04))
+* [How to import existing delegate as witness in BitShares 2.0](How_To_import_an_existing_delegate_as_witness_BitShares_2_0)
