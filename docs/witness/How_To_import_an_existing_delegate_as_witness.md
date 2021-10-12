@@ -1,4 +1,4 @@
-## Preparations in BitShares 0.9 network
+## Preparations in Whitecoin 0.9 network
 
 We need to Extract the signing public and private key from BitShares 0.9.
 
@@ -16,7 +16,7 @@ and the corresponding `<wifkey>`:
     >>> wallet_dump_account_private_key <delegatename> signing_key
     "<wifkey>"
 
-## BitShares 2.0 network (or Graphene testnet)
+## Whitecoin network (or Graphene testnet)
 
 ### Download the genesis block (only for testnet)
 
@@ -42,7 +42,7 @@ The witness_id can be obtain from the blockchain:
     locked >>> get_witness <delegatename>
 
 where `<delegatename` is the name of the account used as delegate in
-BitShares0.9. This delegate is a "witness" in BitShares 2.0.
+BitShares0.9. This delegate is a "witness" in Whitecoin.
 
 ### Running a block producing witness
 

@@ -27,7 +27,7 @@ public keys with balances (or, conversely, public keys with balances could exist
 without any account associated with them). 
 
 In order to get a witness registered we need to import approximately $120 worth of
-BTS into the BitShares 2.0 client later.
+BTS into the Whitecoin client later.
 
 #### Manually extracting private keys (most secure way)
 We can extract the required private keys that hold funds this way. First we get
@@ -106,7 +106,7 @@ balance:
 You will only need BTS balances and the one of your account owner keys in order
 to become a witness.
 
-## BitShares 2.0 network (or Graphene testnet)
+## Whitecoin network (or Graphene testnet)
 
 We now have everything prepared to
 
@@ -156,7 +156,7 @@ Wallet creation is now done.
 
 ### Basic Account Management
 We can import the account name (owner key) and the balance containing keys into
-BitShares 2.0:
+Whitecoin:
 
     unlocked >>> import_key <accountname> <owner wif key>
     true
@@ -175,7 +175,7 @@ BitShares 2.0:
 Note: Make sure to put the []-brackets around the private key, since the import
 method takes an array of keys.  
 
-In case your account's owner key is different from its active key, make sure you import it into BitShares 2.0 as well.
+In case your account's owner key is different from its active key, make sure you import it into Whitecoin as well.
 
 Since only lifetime members can become witnesses, you must first upgrade to a
 lifetime member. This step costs the lifetime-upgrade fee which will eventually

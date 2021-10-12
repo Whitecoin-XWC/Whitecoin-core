@@ -1,14 +1,14 @@
 
-## How to Import Large Wallets from BitShares 0.9.3
+## How to Import Large Wallets
 
-In bitshares 0.9.3c, run: 
+To export run: 
     
     wallet_export_keys /tmp/final_bitshares_keys.json
 
-in bitshares 2.0 CLI wallet, run:
+then to import run:
     >>> import_accounts /tmp/final_bitshares_keys.json my_password
 
-then, for each account in your wallet (run list_my_accounts to see them):
+for each account in your wallet (run list_my_accounts to see them):
 
      >>> import_account_keys /tmp/final_bitshares_keys.json my_password my_account_name my_account_name
 

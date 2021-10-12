@@ -37,6 +37,6 @@ cmake -DBOOST_ROOT=~/boost160 .
 * [Monitoring Accounts](misc/Monitoring-accounts)
 
 ### Witnesses
-* [How to become an active witness in BitShares 2.0](witness/How_To_become_an_active_witness_BitShares_2_0)
+* [How to become an active witness](witness/How_To_become_an_active_witness)
 * [How to setup your witness for test net (Ubuntu 14.04)](How_To_setup_your_witness_testnet_Ubuntu_14_04))
-* [How to import existing delegate as witness in BitShares 2.0](How_To_import_an_existing_delegate_as_witness_BitShares_2_0)
+* [How to import existing delegate as witness in Whitecoin](How_To_import_an_existing_delegate_as_witness)
