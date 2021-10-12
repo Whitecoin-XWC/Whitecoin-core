@@ -23,11 +23,11 @@ Feed providers can have their own branding, there are plenty of organizations th
 
 - Graduated margin call premium
 
-Arhag mentions graduated margin call premium here:  https://bitsharestalk.org/index.php/topic,15775.msg202705.html#msg202705
+Arhag mentions graduated margin call premium here:  https://whitecointalk.org/index.php/topic,15775.msg202705.html#msg202705
 
 - Market matching of redemption requests
 
-Despite my rebuttal of arhag here:  https://bitsharestalk.org/index.php/topic,15775.msg202832.html#msg202832
+Despite my rebuttal of arhag here:  https://whitecointalk.org/index.php/topic,15775.msg202832.html#msg202832
 
 It turns out that we can actually do market matching of redemption requests.  If there's a party who's willing to give the long what they're asking for voluntarily, we should provide the long what they ask for by matching with that party, rather than forcing a short to settle involuntarily.
 

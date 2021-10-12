@@ -1,4 +1,4 @@
-Lets face it, in this days most of the bitshares accounts are created through OpenLedger.
+Lets face it, in this days most of the Whitecoin accounts are created through OpenLedger.
 
 As developers we like to control our accounts throw the command line. This small tutorial will help you import your light/web wallet created account into the cli wallet.
 
@@ -20,7 +20,7 @@ Now, the only thing you need to import to the cli wallet is your account name an
 Start the cli wallet pointing it to a live node:
 
 ```
-root@NC-PH-1346-07:~/bitshares/issue163/bitshares-core# ./programs/cli_wallet/cli_wallet --server-rpc-endpoint ws://localhost:8090
+root@NC-PH-1346-07:~/whitecoin/issue163/whitecoin-core# ./programs/cli_wallet/cli_wallet --server-rpc-endpoint ws://localhost:8090
 ```
 
 Set a password for your wallet, please note this password does not need to be the same as the one you have for OpenLedger, this is a new wallet and it will be secured by a new password, then we import the accounts into the new created wallet.
