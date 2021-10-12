@@ -1,4 +1,4 @@
-When i started working in the bitshares-core one of the first problems i found after building a node was a proper way to run a node in the background.
+When i started working in the whitecoin-core one of the first problems i found after building a node was a proper way to run a node in the background.
 
 When a node is started, it needs to sync all the chain and this takes time, when the ssh connection between my pc and my server is lost then I need to start all over again.
 
@@ -54,17 +54,17 @@ Next day after logging in:
 
 will send you to the terminal with the running node.
 
-More cool stuff can be done with screen but these are the basics for using it with bitshares nodes.
+More cool stuff can be done with screen but these are the basics for using it with whitecoin nodes.
 
 If you have several screens going on, the screen -r will not work for you, but follow the command suggestions and you will know how to gain control of each terminal again:
 
 ```
-root@alfredo:~/bitshares-munich/recurring/bitshares-core# screen -r
+root@alfredo:~/whitecoin-munich/recurring/whitecoin-core# screen -r
 There are several suitable screens on:
         11873.pts-2.alfredo     (09/01/17 20:07:00)     (Detached)
         11831.pts-2.alfredo     (09/01/17 19:55:18)     (Detached)
 Type "screen [-d] -r [pid.]tty.host" to resume one of them.
-root@alfredo:~/bitshares-munich/recurring/bitshares-core# 
+root@alfredo:~/whitecoin-munich/recurring/whitecoin-core# 
 ```
 
 In this case i will do:
