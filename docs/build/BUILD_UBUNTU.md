@@ -19,11 +19,11 @@ The Boost which ships with Ubuntu 14.04 is too old.  You need to download the Bo
     ./b2 install
 
 
-## Build BitShares Core
+## Build Whitecoin Core
 
     cd ..
-    git clone https://github.com/bitshares/bitshares-core.git
-    cd bitshares-core
+    git clone https://github.com/Whitecoin/bitshares-core.git
+    cd Whitecoin-core
     git submodule update --init --recursive
     cmake -DBOOST_ROOT="$BOOST_ROOT" -DCMAKE_BUILD_TYPE=Release .
     make 

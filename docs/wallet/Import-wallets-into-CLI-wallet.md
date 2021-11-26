@@ -1,16 +1,16 @@
 
-## How to Import Large Wallets from BitShares 0.9.3
+## How to Import Large Wallets
 
-In bitshares 0.9.3c, run: 
+To export run: 
     
-    wallet_export_keys /tmp/final_bitshares_keys.json
+    wallet_export_keys /tmp/final_whitecoin_keys.json
 
-in bitshares 2.0 CLI wallet, run:
-    >>> import_accounts /tmp/final_bitshares_keys.json my_password
+then to import run:
+    >>> import_accounts /tmp/final_whitecoin_keys.json my_password
 
-then, for each account in your wallet (run list_my_accounts to see them):
+for each account in your wallet (run list_my_accounts to see them):
 
-     >>> import_account_keys /tmp/final_bitshares_keys.json my_password my_account_name my_account_name
+     >>> import_account_keys /tmp/final_whitecoin_keys.json my_password my_account_name my_account_name
 
 note: in the release tag, this will create a full backup of the wallet after every key it imports.
 If you have thousands of keys, this is quite slow and also takes up a lot of disk space.
