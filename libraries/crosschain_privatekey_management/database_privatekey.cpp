@@ -1,6 +1,4 @@
-﻿
-
-#include "graphene/crosschain_privatekey_management/database_privatekey.hpp"
+﻿#include "graphene/crosschain_privatekey_management/database_privatekey.hpp"
 #include "fc/crypto/aes.hpp"
 
 namespace graphene {

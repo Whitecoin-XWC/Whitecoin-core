@@ -158,7 +158,7 @@ namespace graphene {
 				ret = ret.substr(temp_pos);
 			}
 			//ret = ret.substr(temp_pos);
-			std::cout << "Test log handle amount is " << ret << std::endl;
+			//std::cout << "Test log handle amount is " << ret << std::endl;
 			return ret;
 		}
 		std::string ConvertPre(int old_base, int new_base, std::string source_str) {
@@ -461,7 +461,7 @@ namespace graphene {
 				//std::cout << "to data is " <<to_data << std::endl;
 				ret.data = dev::bytes(bin_input.begin(), bin_input.end());
 				ret.value = dev::jsToU256("0");
-				ret.chainId = 1;
+				ret.chainId = ETH_CHAINID;
 				std::vector<std::string> sep_vec;
 				std::string real_nonce;
 				std::string gas_price = "5000000000";
@@ -847,7 +847,7 @@ namespace graphene {
 			ret.from = dev::jsToAddress(from_account);
 			ret.gas = dev::jsToU256("42000");
 			ret.value = dev::jsToU256(TurnToEthAmount(amount, 18));
-			ret.chainId = 1;
+			ret.chainId = ETH_CHAINID;
 			std::string temp_nonce;
 			std::ostringstream req_body;
 			req_body << "{ \"jsonrpc\": \"2.0\", \
@@ -1002,7 +1002,7 @@ namespace graphene {
 					ret.gas = trx_base.gas();
 					ret.data = trx_base.data();
 					ret.value = trx_base.value();
-					ret.chainId = 1;
+					ret.chainId = ETH_CHAINID;
 					ret.nonce = dev::jsToU256(real_nonce);
 					dev::eth::TransactionBase new_trx_base(ret);
 					auto without_sign_tx = new_trx_base.rlp(dev::eth::WithoutSignature);
@@ -1120,7 +1120,7 @@ namespace graphene {
 			//ret.data = dev::bytes(bin_input.begin(), bin_input.end());
 			ret.data = method_data;
 			ret.value = dev::jsToU256("0");
-			ret.chainId = 1;
+			ret.chainId = ETH_CHAINID;
 
 			std::string real_nonce;
 			if (trx.contains("nonce") == false) {

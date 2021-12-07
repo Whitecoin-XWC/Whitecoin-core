@@ -655,11 +655,46 @@ namespace graphene {
 					return  void_result();
 				FC_ASSERT(trx_state->_trx->operations.size() == 1, "operation error");
 				FC_ASSERT(coldhot_iter->current_trx.operations.size() == 1, "operation size error");
+				auto current_blockNum = d.get_dynamic_global_properties().head_block_number;
+				auto op = coldhot_iter->current_trx.operations[0];
+				if (db().head_block_num() > XWC_CROSSCHAIN_ERC_FORK_HEIGHT){
+					if (op.which() == operation::tag<eths_wallfacer_coldhot_change_signer_operation>::value)
+					{
+						std::cout << "current block number"<< coldhot_iter->block_num << std::endl;
+						FC_ASSERT(coldhot_iter->block_num + 720 < current_blockNum);
+						auto eths_wallfacer_change_signer_op = op.get<eths_wallfacer_coldhot_change_signer_operation>();
+						FC_ASSERT(eths_wallfacer_change_signer_op.chain_type == "ETH" || eths_wallfacer_change_signer_op.chain_type.find("ERC") != eths_wallfacer_change_signer_op.chain_type.npos);
+						auto& manager = graphene::crosschain::crosschain_manager::get_instance();
+						if (!manager.contain_crosschain_handles(eths_wallfacer_change_signer_op.chain_type))
+							return void_result();
+						auto hdl = manager.get_crosschain_handle(std::string(eths_wallfacer_change_signer_op.chain_type));
+						if (!hdl->valid_config())
+							return void_result();
+						auto eth_fail_transaction_id = eths_wallfacer_change_signer_op.signed_crosschain_trx_id;
+						if (eths_wallfacer_change_signer_op.signed_crosschain_trx_id.find('|') != eths_wallfacer_change_signer_op.signed_crosschain_trx_id.npos) {
+							auto pos = eths_wallfacer_change_signer_op.signed_crosschain_trx_id.find('|');
+							eth_fail_transaction_id = eths_wallfacer_change_signer_op.signed_crosschain_trx_id.substr(0, pos);
+						}
+						auto eth_transaction = hdl->transaction_query(eth_fail_transaction_id);
+						FC_ASSERT(eth_transaction.contains("respit_trx"));
+						FC_ASSERT(eth_transaction.contains("source_trx"));
+						auto respit_trx = eth_transaction["respit_trx"].get_object();
+						auto eth_source_trx = eth_transaction["source_trx"].get_object();
+						FC_ASSERT(respit_trx.contains("logs"));
+						FC_ASSERT(respit_trx.contains("gasUsed"));
+						FC_ASSERT(eth_source_trx.contains("gas"));
+						auto receipt_logs = respit_trx["logs"].get_array();
+						if (current_blockNum < COLDHOT_TRANSFER_EVALUATE_HEIGHT)
+						{
+							FC_ASSERT(receipt_logs.size() == 0, "this trasnaction not fail");
+							FC_ASSERT(eth_source_trx["gas"].as_string() == respit_trx["gasUsed"].as_string());
+						}
+						return void_result();
+					}
+				}
 				const auto trx_history_iter = d.fetch_trx(o.fail_trx_id);
 				FC_ASSERT(trx_history_iter.valid());
-				auto current_blockNum = d.get_dynamic_global_properties().head_block_number;
 				FC_ASSERT(trx_history_iter->block_num + 720 < current_blockNum);
-				auto op = coldhot_iter->current_trx.operations[0];
 				FC_ASSERT(op.which() == operation::tag<eths_coldhot_wallfacer_sign_final_operation>::value, "operation type error");
 				auto eths_wallfacer_sign_final_op = op.get<eths_coldhot_wallfacer_sign_final_operation>();
 				FC_ASSERT(eths_wallfacer_sign_final_op.chain_type == "ETH" || eths_wallfacer_sign_final_op.chain_type.find("ERC") != eths_wallfacer_sign_final_op.chain_type.npos);
@@ -683,11 +718,11 @@ namespace graphene {
 				FC_ASSERT(respit_trx.contains("gasUsed"));
 				FC_ASSERT(eth_source_trx.contains("gas"));
 				auto receipt_logs = respit_trx["logs"].get_array();
-				
+
 				if (current_blockNum < COLDHOT_TRANSFER_EVALUATE_HEIGHT)
 				{
-				FC_ASSERT(receipt_logs.size() == 0, "this trasnaction not fail");
-				FC_ASSERT(eth_source_trx["gas"].as_string() == respit_trx["gasUsed"].as_string());
+					FC_ASSERT(receipt_logs.size() == 0, "this trasnaction not fail");
+					FC_ASSERT(eth_source_trx["gas"].as_string() == respit_trx["gasUsed"].as_string());
 				}
 				return void_result();
 			}FC_CAPTURE_AND_RETHROW((o))

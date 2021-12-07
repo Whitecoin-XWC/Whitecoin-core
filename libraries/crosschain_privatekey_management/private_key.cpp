@@ -1,6 +1,4 @@
-﻿
-
-#include <graphene/crosschain_privatekey_management/private_key.hpp>
+﻿#include <graphene/crosschain_privatekey_management/private_key.hpp>
 #include <graphene/utilities/key_conversion.hpp>
 #include <fc/crypto/base58.hpp>
 #include <fc/crypto/ripemd160.hpp>

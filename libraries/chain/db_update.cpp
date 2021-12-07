@@ -327,8 +327,10 @@ bool database::_need_rollback(const proposal_object& proposal)
 			return result;
 		};
 		auto all_wallfacers_in = [this](const vector<multisig_address_object>& wallfacer_multisignatures, vector<wallfacer_member_object> wallfacers) {
-			if (wallfacer_multisignatures.size() < wallfacers.size())
+			if (wallfacer_multisignatures.size() < wallfacers.size()) {
 				return false;
+			}
+				
 			while (wallfacers.size() != 0)
 			{
 				auto wallfacer = wallfacers.back();
@@ -342,8 +344,10 @@ bool database::_need_rollback(const proposal_object& proposal)
 						break;
 					}
 				}
-				if (!found)
+				if (!found) {
 					return false;
+				}
+					
 			}
 			return true;
 		};
@@ -353,6 +357,10 @@ bool database::_need_rollback(const proposal_object& proposal)
 		{
 			if (itr.get_id() == asset_id_type())
 				continue;
+			if (head_block_num() > XWC_CROSSCHAIN_ERC_FORK_HEIGHT) {
+				if (itr.symbol == "ETH" || itr.symbol.find("ERC") != string::npos)
+					continue;
+			}
 			auto multisig_account_pair = get_current_multisig_account(itr.symbol);
 			if (!multisig_account_pair.valid())
 			{
