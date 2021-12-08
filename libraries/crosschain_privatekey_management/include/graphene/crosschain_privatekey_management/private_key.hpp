@@ -16,6 +16,8 @@ const int ltc_privkey = 0xB0;
 const int doge_pubkey = 0x1e;
 const int doge_script = 0x16;
 const int doge_privkey = 0x9e;
+
+const int ETH_CHAINID = 1;
 /*
 const int doge_pubkey = 0x6f;
 const int doge_script = 0xc4;

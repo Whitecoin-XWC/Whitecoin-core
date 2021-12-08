@@ -170,8 +170,8 @@
 #define GRAPHENE_GUARD_PAY_RATIO							 20
 #define GRAPHENE_ALL_MINER_PAY_RATIO						 50
 #define XWC_DEVELOP_TEAM_PAY_TATIO                           30
-#define XWC_REFERENDUM_PACKING_PERIOD                        24*3600
-#define XWC_REFERENDUM_VOTING_PERIOD                         7*24*3600
+#define XWC_REFERENDUM_PACKING_PERIOD                        120
+#define XWC_REFERENDUM_VOTING_PERIOD                         1800
 #define XWC_CHECK_POINT                                      "00454660f85362eb7e4342b34220ca299e74dd41"
 #define XWC_CHECK_POINT_BLOCK                                4540000
 #define GRAPHENE_DELAY_TRX_REFER_BLOCK_NUM					 10
