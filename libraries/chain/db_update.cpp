@@ -357,9 +357,10 @@ bool database::_need_rollback(const proposal_object& proposal)
 		{
 			if (itr.get_id() == asset_id_type())
 				continue;
-			if (head_block_num() > XWC_CROSSCHAIN_ERC_FORK_HEIGHT) {
-				if (itr.symbol == "ETH" || itr.symbol.find("ERC") != string::npos)
-					continue;
+			if (head_block_num() > XWC_CROSSCHAIN_ERC_FORK_HEIGHT
+                && (itr.symbol == "ETH" || itr.symbol.find("ERC") != string::npos)) {
+				
+                continue;
 			}
 			auto multisig_account_pair = get_current_multisig_account(itr.symbol);
 			if (!multisig_account_pair.valid())

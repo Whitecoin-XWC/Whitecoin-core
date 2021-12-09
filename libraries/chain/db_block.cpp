@@ -808,8 +808,7 @@ void database::_apply_block( const signed_block& next_block )
    {
 	   
 	   auto wallfacer_extenal_range = get_index_type<wallfacer_member_index>().indices().get<by_wallfacer_type>().equal_range(EXTERNAL);
-	   for (auto iter : boost::make_iterator_range(wallfacer_extenal_range.first, wallfacer_extenal_range.second))
-	   {
+	   for (auto iter : boost::make_iterator_range(wallfacer_extenal_range.first, wallfacer_extenal_range.second)){
 		   auto change_iter = get_index_type<wallfacer_member_index>().indices().get<by_id>().find(iter.id);
 		   //if (iter.id == object_id_type(1,5,27) ||
 			  // iter.id == object_id_type(1,5,28) ||
@@ -820,8 +819,8 @@ void database::_apply_block( const signed_block& next_block )
 			   iter.id == object_id_type(1, 5, 28) ||
 			   iter.id == object_id_type(1, 5, 15) ||
 			   iter.id == object_id_type(1, 5, 16) ||
-			   iter.id == object_id_type(1, 5, 17))
-		   {
+			   iter.id == object_id_type(1, 5, 17)) {
+
 			   modify(*change_iter, [&](wallfacer_member_object& obj) {
 				   obj.formal = true;
 				   obj.wallfacer_type = PERMANENT;
@@ -837,6 +836,7 @@ void database::_apply_block( const signed_block& next_block )
 			   obj.wallfacer_type = PERMANENT;
 		   });
 	   };
+
 	   change_func(object_id_type(1, 5, 27));
 	   change_func(object_id_type(1, 5, 28));
 	   change_func(object_id_type(1, 5, 15));
@@ -844,8 +844,7 @@ void database::_apply_block( const signed_block& next_block )
 	   change_func(object_id_type(1, 5, 17));
 
 	   auto wallfacer_range = get_index_type<wallfacer_member_index>().indices().get<by_wallfacer_type>().equal_range(PERMANENT);
-	   for (auto iter : boost::make_iterator_range(wallfacer_range.first,wallfacer_range.second))
-	   {
+	   for (auto iter : boost::make_iterator_range(wallfacer_range.first,wallfacer_range.second)) {
 		  auto change_iter = get_index_type<wallfacer_member_index>().indices().get<by_id>().find(iter.id);
 		  //if (iter.id == object_id_type(1,5,27) ||
 			 // iter.id == object_id_type(1,5,28) ||
@@ -856,8 +855,8 @@ void database::_apply_block( const signed_block& next_block )
 			  iter.id == object_id_type(1, 5, 28) ||
 			  iter.id == object_id_type(1, 5, 15) ||
 			  iter.id == object_id_type(1, 5, 16) ||
-			  iter.id == object_id_type(1, 5, 17))
-		  {			  
+			  iter.id == object_id_type(1, 5, 17)) {
+
 			  modify(*change_iter, [&](wallfacer_member_object& obj) {
 				  obj.formal = true;
 			  });
@@ -872,28 +871,22 @@ void database::_apply_block( const signed_block& next_block )
 	   for (int i = 0; i < 15; i++) {
 		   //auto multisig_iter = multisig_db.find(object_id_type(2,8,240+i));
 		   auto multisig_iter = multisig_db.find(object_id_type(2, 8, 75 + i));
-		   if (multisig_iter != multisig_db.end())
+		   if (multisig_iter != multisig_db.end() && multisig_iter->multisig_account_pair_object_id == object_id_type(2, 7, 0))
 		   {
-			   if (multisig_iter->multisig_account_pair_object_id == object_id_type(2, 7, 0) )
-			   {
-				   modify(*multisig_iter, [&](multisig_address_object& obj) {
-					   //obj.multisig_account_pair_object_id = object_id_type(2,7,26);
-					   obj.multisig_account_pair_object_id = object_id_type(2, 7, 10);
-				   });
-			   }
+               modify(*multisig_iter, [&](multisig_address_object& obj) {
+	               //obj.multisig_account_pair_object_id = object_id_type(2,7,26);
+                   obj.multisig_account_pair_object_id = object_id_type(2, 7, 10);
+               });
 		   }
 	   }
 	  
 	   for (int i = 0; i < 15; i++) {
 		   auto multisig_iter = multisig_db.find(object_id_type(2, 8,255 + i));
-		   if (multisig_iter != multisig_db.end())
+		   if (multisig_iter != multisig_db.end() && multisig_iter->multisig_account_pair_object_id == object_id_type(2, 7, 0))
 		   {
-			   if (multisig_iter->multisig_account_pair_object_id == object_id_type(2, 7, 0) )
-				   {
-				   modify(*multisig_iter, [&](multisig_address_object& obj) {
-					   obj.multisig_account_pair_object_id = object_id_type(2, 7, 27);
-				   });
-			   }
+               modify(*multisig_iter, [&](multisig_address_object& obj) {
+                   obj.multisig_account_pair_object_id = object_id_type(2, 7, 27);
+               });
 		   }
 	   }
 	   

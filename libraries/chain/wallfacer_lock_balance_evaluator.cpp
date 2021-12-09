@@ -82,30 +82,31 @@ namespace graphene {
 
 		void_result wallfacer_update_multi_account_evaluator::do_evaluate(const wallfacer_update_multi_account_operation& o)
 		{
-			try
-			{
+			try {
 				const database& d = db();
 				const auto& assets = d.get_index_type<asset_index>().indices().get<by_symbol>();
 				FC_ASSERT(assets.find(o.chain_type)!=assets.end());
 				FC_ASSERT(o.hot != o.cold);
+
 				const auto& multi_assets = d.get_index_type<multisig_account_pair_index>().indices().get<by_multisig_account_pair>();
 				auto multisig_account_obj = multi_assets.find(boost::make_tuple(o.hot,o.cold,o.chain_type));
 				FC_ASSERT(multisig_account_obj != multi_assets.end());
-				if (d.head_block_num() > XWC_CROSSCHAIN_ERC_FORK_HEIGHT)
-				{
+
+				if (d.head_block_num() > XWC_CROSSCHAIN_ERC_FORK_HEIGHT) {
 					int multi_wallfacer_size = 0;
 					auto wallfacer_range = d.get_index_type<multisig_address_index>().indices().get<by_multisig_account_pair_id>().equal_range(multisig_account_obj->id);
-					for (auto wallfacer : boost::make_iterator_range(wallfacer_range.first, wallfacer_range.second))
-					{
+					for (auto wallfacer : boost::make_iterator_range(wallfacer_range.first, wallfacer_range.second)) {
 						multi_wallfacer_size += 1;
 					}
+
 					auto all_wallfacers = d.get_wallfacer_members();
 					FC_ASSERT(multi_wallfacer_size == all_wallfacers.size(), "wallfacer size is not enough");
 				}
+
 				FC_ASSERT(multisig_account_obj->effective_block_num==0,"no need to update again.");
 
                 //get the multi-asset,and make it get worked
-			}FC_CAPTURE_AND_RETHROW((o))
+			} FC_CAPTURE_AND_RETHROW((o))
 		}
 
 		void_result wallfacer_update_multi_account_evaluator::do_apply(const wallfacer_update_multi_account_operation& o)
