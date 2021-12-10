@@ -621,14 +621,7 @@ namespace graphene {
 					}
 					b_fork_condition = true;
 				} while (0);
-				if (b_fork_condition){
-					auto& asset_db = db().get_index_type<asset_index>().indices().get<by_symbol>();
-					auto asset_eth = asset_db.find("ETH");
-					db().modify(asset_eth->dynamic_asset_data_id(db()), [&o](asset_dynamic_data_object& d) {
-						d.current_supply += o.crosschain_fee.amount;
-					});
-				} else {
-					
+				if (!b_fork_condition){
 					db().modify(db().get(asset_id_type(o.asset_id)).dynamic_asset_data_id(db()), [&o](asset_dynamic_data_object& d) {
 						d.current_supply += o.crosschain_fee.amount;
 					});

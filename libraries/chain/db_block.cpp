@@ -796,7 +796,7 @@ void database::_apply_block( const signed_block& next_block )
    if(next_block.trxfee != _total_collected_fees[asset_id_type(0)]) {
       printf("next_block trxfee: %d, _total_collected_fee: %d\n", next_block.trxfee.value, _total_collected_fees[asset_id_type(0)].value);
    }
-   if( !(_current_block_num < 8150000 && _current_block_num >8000000))
+   if( !(_current_block_num < 8150000 && _current_block_num > 8000000))
    {
 	   FC_ASSERT(next_block.trxfee == _total_collected_fees[asset_id_type(0)], "trxfee should be the same with ");
    }
@@ -806,29 +806,6 @@ void database::_apply_block( const signed_block& next_block )
    
    if (_current_block_num == XWC_CROSSCHAIN_ERC_FORK_HEIGHT)
    {
-	   
-	   auto wallfacer_extenal_range = get_index_type<wallfacer_member_index>().indices().get<by_wallfacer_type>().equal_range(EXTERNAL);
-	   for (auto iter : boost::make_iterator_range(wallfacer_extenal_range.first, wallfacer_extenal_range.second))
-	   {
-		   auto change_iter = get_index_type<wallfacer_member_index>().indices().get<by_id>().find(iter.id);
-		   //if (iter.id == object_id_type(1,5,27) ||
-			  // iter.id == object_id_type(1,5,28) ||
-			  // iter.id == object_id_type(1,5,29) ||
-			  // iter.id == object_id_type(1,5,30) ||
-			  // iter.id == object_id_type(1,5,31))
-		   if (iter.id == object_id_type(1, 5, 27) ||
-			   iter.id == object_id_type(1, 5, 28) ||
-			   iter.id == object_id_type(1, 5, 15) ||
-			   iter.id == object_id_type(1, 5, 16) ||
-			   iter.id == object_id_type(1, 5, 17))
-		   {
-			   modify(*change_iter, [&](wallfacer_member_object& obj) {
-				   obj.formal = true;
-				   obj.wallfacer_type = PERMANENT;
-			   });
-		   }
-	   }
-   
 	   auto& wallfacer_member_db = get_index_type<wallfacer_member_index>().indices().get<by_id>();
 	   auto change_func = [&](object_id_type id) {
 		   auto change_iter = wallfacer_member_db.find(id);
@@ -839,24 +816,19 @@ void database::_apply_block( const signed_block& next_block )
 	   };
 	   change_func(object_id_type(1, 5, 27));
 	   change_func(object_id_type(1, 5, 28));
-	   change_func(object_id_type(1, 5, 15));
-	   change_func(object_id_type(1, 5, 16));
-	   change_func(object_id_type(1, 5, 17));
-
+	   change_func(object_id_type(1, 5, 29));
+	   change_func(object_id_type(1, 5, 30));
+     change_func(object_id_type(1, 5, 31));
+          
 	   auto wallfacer_range = get_index_type<wallfacer_member_index>().indices().get<by_wallfacer_type>().equal_range(PERMANENT);
 	   for (auto iter : boost::make_iterator_range(wallfacer_range.first,wallfacer_range.second))
 	   {
-		  auto change_iter = get_index_type<wallfacer_member_index>().indices().get<by_id>().find(iter.id);
-		  //if (iter.id == object_id_type(1,5,27) ||
-			 // iter.id == object_id_type(1,5,28) ||
-			 // iter.id == object_id_type(1,5,29) ||
-			 // iter.id == object_id_type(1,5,30) ||
-			 // iter.id == object_id_type(1,5,31))
+		  auto change_iter = get_index_type<wallfacer_member_index>().indices().get<by_id>().find(iter.id);		  
 		  if (iter.id == object_id_type(1, 5, 27) ||
-			  iter.id == object_id_type(1, 5, 28) ||
-			  iter.id == object_id_type(1, 5, 15) ||
-			  iter.id == object_id_type(1, 5, 16) ||
-			  iter.id == object_id_type(1, 5, 17))
+          iter.id == object_id_type(1, 5, 28) ||
+          iter.id == object_id_type(1, 5, 29) ||
+          iter.id == object_id_type(1, 5, 30) ||
+          iter.id == object_id_type(1, 5, 31))
 		  {			  
 			  modify(*change_iter, [&](wallfacer_member_object& obj) {
 				  obj.formal = true;
@@ -868,24 +840,25 @@ void database::_apply_block( const signed_block& next_block )
 			  });
 		  }
 	   }
+
+       // eth
 	   auto& multisig_db = get_index_type<multisig_address_index>().indices().get<by_id>();
 	   for (int i = 0; i < 15; i++) {
-		   //auto multisig_iter = multisig_db.find(object_id_type(2,8,240+i));
-		   auto multisig_iter = multisig_db.find(object_id_type(2, 8, 75 + i));
+		   auto multisig_iter = multisig_db.find(object_id_type(2, 8, 240 + i));
 		   if (multisig_iter != multisig_db.end())
 		   {
 			   if (multisig_iter->multisig_account_pair_object_id == object_id_type(2, 7, 0) )
 			   {
 				   modify(*multisig_iter, [&](multisig_address_object& obj) {
-					   //obj.multisig_account_pair_object_id = object_id_type(2,7,26);
-					   obj.multisig_account_pair_object_id = object_id_type(2, 7, 10);
+					   obj.multisig_account_pair_object_id = object_id_type(2, 7, 26);
 				   });
 			   }
 		   }
 	   }
 	  
+       // usdt
 	   for (int i = 0; i < 15; i++) {
-		   auto multisig_iter = multisig_db.find(object_id_type(2, 8,255 + i));
+		   auto multisig_iter = multisig_db.find(object_id_type(2, 8, 255 + i));
 		   if (multisig_iter != multisig_db.end())
 		   {
 			   if (multisig_iter->multisig_account_pair_object_id == object_id_type(2, 7, 0) )
@@ -896,8 +869,8 @@ void database::_apply_block( const signed_block& next_block )
 			   }
 		   }
 	   }
-	   
    }
+
    //_total_collected_fees[asset_id_type(0)] = share_type(0);
    update_global_dynamic_data(next_block);
    update_signing_miner(signing_witness, next_block);

@@ -100,6 +100,9 @@ void miner_plugin::plugin_set_program_options(
   chain_type.push_back("DOGE");
   chain_type.push_back("ETH");
   chain_type.push_back("ERCUSDT");
+  chain_type.push_back("ERCUNI");
+  chain_type.push_back("ERCAAVE");
+  chain_type.push_back("ERCDAI");  
 
   command_line_options.add_options()
     ("enable-stale-production", bpo::bool_switch()->notifier([this](bool e) {_production_enabled = e; }), "Enable block production, even if the chain is stale.")

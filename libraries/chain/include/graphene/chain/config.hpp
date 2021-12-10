@@ -29,26 +29,26 @@
 
 #define GRAPHENE_CONTRACT_TESTING_GAS     100000000
 
-#define CONTRACT_MAX_TRASACTION_FEE_RATE 100000
-#define GRAPHENE_MIN_ACCOUNT_NAME_LENGTH 1
-#define GRAPHENE_MAX_ACCOUNT_NAME_LENGTH 63
+#define CONTRACT_MAX_TRASACTION_FEE_RATE  100000
+#define GRAPHENE_MIN_ACCOUNT_NAME_LENGTH  1
+#define GRAPHENE_MAX_ACCOUNT_NAME_LENGTH  63
 
-#define GRAPHENE_MIN_ASSET_SYMBOL_LENGTH 3
-#define GRAPHENE_MAX_ASSET_SYMBOL_LENGTH 16
+#define GRAPHENE_MIN_ASSET_SYMBOL_LENGTH  3
+#define GRAPHENE_MAX_ASSET_SYMBOL_LENGTH  16
 
-#define GRAPHENE_MAX_SHARE_SUPPLY int64_t(100000000000000000ll)
-											
-#define GRAPHENE_INITIAL_SHARE_SUPPLY int64_t(80000000000000000ll)
-#define GRAPHENE_MAX_PAY_RATE 10000 /* 100% */
-#define GRAPHENE_MAX_SIG_CHECK_DEPTH 2
-#define GRAPHENE_MIN_PLEDGE_WEIGHT_LINE 50
-#define GRAPHENE_BONUS_DISTRIBUTE_LIMIT int64_t(1000000000ll)
+#define GRAPHENE_MAX_SHARE_SUPPLY         int64_t(100000000000000000ll)
+
+#define GRAPHENE_INITIAL_SHARE_SUPPLY    int64_t(80000000000000000ll)
+#define GRAPHENE_MAX_PAY_RATE            10000 /* 100% */
+#define GRAPHENE_MAX_SIG_CHECK_DEPTH     2
+#define GRAPHENE_MIN_PLEDGE_WEIGHT_LINE  50
+#define GRAPHENE_BONUS_DISTRIBUTE_LIMIT  int64_t(1000000000ll)
 #define GRAPHENE_BONUS_DISTRIBUTE_BLOCK_NUM  int64_t(100000ll)
-#define  GRAPHENE_VALIDATE_CROSSCHAIN_PERIOD 2*3600
-/**
- * Don't allow the committee_members to publish a limit that would
- * make the network unable to operate.
- */
+#define GRAPHENE_VALIDATE_CROSSCHAIN_PERIOD  2*3600
+ /**
+  * Don't allow the committee_members to publish a limit that would
+  * make the network unable to operate.
+  */
 #define GRAPHENE_MIN_TRANSACTION_SIZE_LIMIT 1024
 #define GRAPHENE_MIN_BLOCK_INTERVAL   1 /* seconds */
 #define GRAPHENE_MAX_BLOCK_INTERVAL  30 /* seconds */
@@ -66,11 +66,11 @@
 #define GRAPHENE_MIN_BLOCK_SIZE_LIMIT (GRAPHENE_MIN_TRANSACTION_SIZE_LIMIT*5) // 5 transactions per block
 #define GRAPHENE_MIN_TRANSACTION_EXPIRATION_LIMIT (GRAPHENE_MAX_BLOCK_INTERVAL * 5) // 5 transactions per block
 #define GRAPHENE_BLOCKCHAIN_PRECISION                           uint64_t( 10 )
-#define GRAPHENE_XWCCHAIN_PRECISION                           uint64_t( 100000000 )
+#define GRAPHENE_XWCCHAIN_PRECISION                             uint64_t( 100000000 )
 #define GRAPHENE_BLOCKCHAIN_PRECISION_DIGITS                    8
 #define GRAPHENE_DEFAULT_TRANSFER_FEE                           (1*GRAPHENE_BLOCKCHAIN_PRECISION)
 #define GRAPHENE_MAX_INSTANCE_ID                                (uint64_t(-1)>>16)
-/** percentage fields are fixed point with a denominator of 10,000 */
+  /** percentage fields are fixed point with a denominator of 10,000 */
 #define GRAPHENE_100_PERCENT                                    10000
 #define GRAPHENE_1_PERCENT                                      (GRAPHENE_100_PERCENT/100)
 /** NOTE: making this a power of 2 (say 2^15) would greatly accelerate fee calcs */
@@ -83,28 +83,28 @@
 #define GRAPHENE_DEFAULT_MAX_AUTHORITY_MEMBERSHIP               10
 #define GRAPHENE_DEFAULT_MAX_ASSET_WHITELIST_AUTHORITIES        10
 #define GRAPHENE_DEFAULT_MAX_ASSET_FEED_PUBLISHERS              10
-#define GRAPHENE_DEFAULT_MIN_PAY_BACK_BALANCE					(500*1000*GRAPHENE_BLOCKCHAIN_PRECISION)
+#define GRAPHENE_DEFAULT_MIN_PAY_BACK_BALANCE                   (500*1000*GRAPHENE_BLOCKCHAIN_PRECISION)
 /**
  *  These ratios are fixed point numbers with a denominator of GRAPHENE_COLLATERAL_RATIO_DENOM, the
  *  minimum maitenance collateral is therefore 1.001x and the default
  *  maintenance ratio is 1.75x
  */
-///@{
-#define GRAPHENE_COLLATERAL_RATIO_DENOM                 1000
-#define GRAPHENE_MIN_COLLATERAL_RATIO                   1001  ///< lower than this could result in divide by 0
-#define GRAPHENE_MAX_COLLATERAL_RATIO                   32000 ///< higher than this is unnecessary and may exceed int16 storage
-#define GRAPHENE_DEFAULT_MAINTENANCE_COLLATERAL_RATIO   1750 ///< Call when collateral only pays off 175% the debt
-#define GRAPHENE_DEFAULT_MAX_SHORT_SQUEEZE_RATIO        1500 ///< Stop calling when collateral only pays off 150% of the debt
+ ///@{
+#define GRAPHENE_COLLATERAL_RATIO_DENOM                       1000
+#define GRAPHENE_MIN_COLLATERAL_RATIO                         1001  ///< lower than this could result in divide by 0
+#define GRAPHENE_MAX_COLLATERAL_RATIO                         32000 ///< higher than this is unnecessary and may exceed int16 storage
+#define GRAPHENE_DEFAULT_MAINTENANCE_COLLATERAL_RATIO         1750 ///< Call when collateral only pays off 175% the debt
+#define GRAPHENE_DEFAULT_MAX_SHORT_SQUEEZE_RATIO              1500 ///< Stop calling when collateral only pays off 150% of the debt
 ///@}
-#define GRAPHENE_DEFAULT_MARGIN_PERIOD_SEC              (30*60*60*24)
+#define GRAPHENE_DEFAULT_MARGIN_PERIOD_SEC                    (30*60*60*24)
 
 #define GRAPHENE_DEFAULT_MIN_MINER_COUNT                      (25)
-#define GRAPHENE_DEFAULT_MIN_GUARD_COUNT					  (7)
-#define GRAPHENE_DEFAULT_MAX_MINERS							  (1001) // SHOULD BE ODD
-#define GRAPHENE_DEFAULT_MIN_GUARDS							  (7)
-#define GRAPHENE_DEFAULT_MAX_GUARDS							  (15)
+#define GRAPHENE_DEFAULT_MIN_GUARD_COUNT                      (7)
+#define GRAPHENE_DEFAULT_MAX_MINERS                           (1001) // SHOULD BE ODD
+#define GRAPHENE_DEFAULT_MIN_GUARDS                           (7)
+#define GRAPHENE_DEFAULT_MAX_GUARDS                           (15)
 #define GRAPHENE_DEFAULT_MAX_PROPOSAL_LIFETIME_SEC            (60*60*24*7*4) // Four weeks
-#define GRAPHENE_DEFAULT_GUARD_PROPOSAL_REVIEW_PERIOD_SEC	  (60*60*24*7*2)//(60*60*24*7*2) // Two weeks
+#define GRAPHENE_DEFAULT_GUARD_PROPOSAL_REVIEW_PERIOD_SEC     (60*60*24*7*2)//(60*60*24*7*2) // Two weeks
 #define GRAPHENE_DEFAULT_NETWORK_PERCENT_OF_FEE               (20*GRAPHENE_1_PERCENT)
 #define GRAPHENE_DEFAULT_LIFETIME_REFERRER_PERCENT_OF_FEE     (30*GRAPHENE_1_PERCENT)
 #define GRAPHENE_DEFAULT_MAX_BULK_DISCOUNT_PERCENT            (50*GRAPHENE_1_PERCENT)
@@ -159,27 +159,27 @@
 
 #define GRAPHENE_IRREVERSIBLE_THRESHOLD                      (70 * GRAPHENE_1_PERCENT)
 #define GRAPHENE_REVERSIBLE_BLOCK_COUNT                      3600/5*2
-#define GRAPHENE_PRODUCT_PER_ROUND							 25
+#define GRAPHENE_PRODUCT_PER_ROUND                           25
 
 #define XWC_MIN_GAS_PRICE                                    0
 #define XWC_MAX_GAS_LIMIT                                    100000000
 
-#define GRAPHENE_MINER_PAY_RATIO							 0
-#define GRAPHENE_MINER_PLEDGE_PAY_RATIO						 100
-#define GRAPHENE_MINER_PAY_BACK_RATIO						 50
-#define GRAPHENE_GUARD_PAY_RATIO							 20
-#define GRAPHENE_ALL_MINER_PAY_RATIO						 50
+#define GRAPHENE_MINER_PAY_RATIO                             0
+#define GRAPHENE_MINER_PLEDGE_PAY_RATIO                      100
+#define GRAPHENE_MINER_PAY_BACK_RATIO                        50
+#define GRAPHENE_GUARD_PAY_RATIO                             20
+#define GRAPHENE_ALL_MINER_PAY_RATIO                         50
 #define XWC_DEVELOP_TEAM_PAY_TATIO                           30
-#define XWC_REFERENDUM_PACKING_PERIOD                        120
-#define XWC_REFERENDUM_VOTING_PERIOD                         1800
+#define XWC_REFERENDUM_PACKING_PERIOD                        24*3600
+#define XWC_REFERENDUM_VOTING_PERIOD                         7*24*3600
 #define XWC_CHECK_POINT                                      "00454660f85362eb7e4342b34220ca299e74dd41"
 #define XWC_CHECK_POINT_BLOCK                                4540000
-#define GRAPHENE_DELAY_TRX_REFER_BLOCK_NUM					 10
-/**
- *  Reserved Account IDs with special meaning
- */
-///@{
-/// Represents the current wallfacers, two-week review period
+#define GRAPHENE_DELAY_TRX_REFER_BLOCK_NUM                   10
+ /**
+  *  Reserved Account IDs with special meaning
+  */
+  ///@{
+  /// Represents the current wallfacers, two-week review period
 #define GRAPHENE_GUARD_ACCOUNT (graphene::chain::account_id_type(0))
 /// Represents the current miners
 #define GRAPHENE_MINER_ACCOUNT (graphene::chain::account_id_type(1))

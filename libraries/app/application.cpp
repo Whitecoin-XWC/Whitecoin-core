@@ -79,7 +79,7 @@ namespace graphene {
 
     namespace bpo = boost::program_options;
 
-#define XWC_MIDDLEWARE_ENDPOINT "112.5.37.213:5005"
+    #define XWC_MIDDLEWARE_ENDPOINT "112.5.37.213:5005"
 
     namespace detail {
 
