@@ -161,15 +161,7 @@ namespace graphene {
 					}
 					fork_condition = true;
 				} while (0);
-				if (fork_condition){
-					auto& asset_db = d.get_index_type<asset_index>().indices().get<by_symbol>();
-					auto asset_eth = asset_db.find("ETH");
-					auto eth_fee = asset_eth->dynamic_data(d).fee_pool;
-					d.modify(asset_eth->dynamic_asset_data_id(d), [&asset_eth, without_sign_op](asset_dynamic_data_object& d) {
-						d.current_supply -= without_sign_op.crosschain_fee.amount;
-					});
-				}
-				else {
+				if (!fork_condition){
 					d.modify(asset_type.dynamic_asset_data_id(d), [&asset_type, without_sign_op](asset_dynamic_data_object& d) {
 						d.current_supply -= without_sign_op.crosschain_fee.amount;
 					});
@@ -282,16 +274,7 @@ namespace graphene {
 					}
 					fork_condition = true;
 				} while (0);
-				if (fork_condition) {
-					auto& asset_db = d.get_index_type<asset_index>().indices().get<by_symbol>();
-					auto asset_eth = asset_db.find("ETH");
-					auto eth_fee = asset_eth->dynamic_data(d).fee_pool;
-
-					d.modify(asset_eth->dynamic_asset_data_id(d), [eth_fee, without_sign_op](asset_dynamic_data_object& d) {
-						d.current_supply -= without_sign_op.crosschain_fee.amount;
-					});
-				}
-				else {
+				if (!fork_condition) {
 					d.modify(asset_type.dynamic_asset_data_id(d), [&asset_type, without_sign_op](asset_dynamic_data_object& d) {
 						d.current_supply -= without_sign_op.crosschain_fee.amount;
 					});
@@ -610,21 +593,11 @@ namespace graphene {
 					}
 					fork_condition = true;
 				} while (0);
-				if (fork_condition) {
-					auto& asset_db = d.get_index_type<asset_index>().indices().get<by_symbol>();
-					auto asset_eth = asset_db.find("ETH");
-					auto eth_fee = asset_eth->dynamic_data(d).fee_pool;
-
-					d.modify(asset_eth->dynamic_asset_data_id(d), [eth_fee, without_sign_op](asset_dynamic_data_object& d) {
-						d.current_supply -= without_sign_op.crosschain_fee.amount;
-					});
-				}
-				else {
+				if (!fork_condition) {
 					d.modify(asset_type.dynamic_asset_data_id(d), [&asset_type, without_sign_op](asset_dynamic_data_object& d) {
 						d.current_supply -= without_sign_op.crosschain_fee.amount;
 					});
 				}
-				
 			}FC_CAPTURE_AND_RETHROW((o))
 		}
 	}
