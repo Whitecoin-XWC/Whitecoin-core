@@ -6,21 +6,19 @@
 #include "Keccak.hpp"
 #include <fc/variant_object.hpp>
 #include <fc/io/json.hpp>
-const int btc_pubkey = 0x0;
-const int btc_script = 0x05;
+const int btc_pubkey  = 0x0;
+const int btc_script  = 0x05;
 const int btc_privkey = 0x80;
-const int ltc_pubkey = 0x30;
-const int ltc_script = 0x32;
+const int ltc_pubkey  = 0x30;
+const int ltc_script  = 0x32;
 const int ltc_privkey = 0xB0;
 
 const int doge_pubkey = 0x1e;
 const int doge_script = 0x16;
-const int doge_privkey = 0x9e;
-/*
-const int doge_pubkey = 0x6f;
-const int doge_script = 0xc4;
-const int doge_privkey = 0xef;
-*/
+const int doge_privkey= 0x9e;
+
+const int ETH_CHAINID = 1;
+
 namespace graphene {
 	namespace privatekey_management {
 

@@ -448,7 +448,26 @@ namespace graphene {
 				std::map<std::string, std::string> memo_info;
 				std::map<std::string, vector<transaction_id_type>> ccw_trx_ids;
 				map<asset_id_type, double> fee;
+				map<asset_id_type, double> erc_collect_crosschain_fee;
+				bool exist_fork_erc_trx = false;
 				auto& manager = graphene::crosschain::crosschain_manager::get_instance();
+				for (auto & cross_chain_trx : boost::make_iterator_range(withdraw_range.first, withdraw_range.second)) {
+					if (cross_chain_trx.real_transaction.id() != cross_chain_trx.transaction_id || cross_chain_trx.real_transaction.operations.size() < 1) {
+						continue;
+					}
+					auto op = cross_chain_trx.real_transaction.operations[0];
+					auto withop = op.get<crosschain_withdraw_evaluate::operation_type>();
+					if (withop.asset_symbol.find("ERC") != withop.asset_symbol.npos) {
+						
+						if (cross_chain_trx.block_num <= XWC_CROSSCHAIN_ERC_FORK_HEIGHT)
+						{
+							exist_fork_erc_trx = true;
+							break;
+						}
+					}
+				}
+
+
 				for (auto & cross_chain_trx : boost::make_iterator_range(withdraw_range.first,withdraw_range.second)) {
 					if (dest_info.size() >= 10)
 						break;
@@ -496,11 +515,33 @@ namespace graphene {
 					if (!valid_address) {
 						continue;
 					}
+					if (head_block_num() > XWC_CROSSCHAIN_ERC_FORK_HEIGHT) {
+						if (opt_asset->symbol.find("ERC") != opt_asset->symbol.npos) {
+							if (exist_fork_erc_trx)
+							{
+								if (cross_chain_trx.block_num > XWC_CROSSCHAIN_ERC_FORK_HEIGHT)
+								{
+									continue;
+								}
+							}
+						}
+					}
 					auto crosschain_fee = opt_asset->amount_to_string(opt_asset->dynamic_data(*this).fee_pool);
 
 					auto temp_amount = fc::variant(withop.amount).as_double()- fc::variant(crosschain_fee).as_double();
 					fee[withop.asset_id] += fc::variant(crosschain_fee).as_double();
-						
+					if (head_block_num() > XWC_CROSSCHAIN_ERC_FORK_HEIGHT && !exist_fork_erc_trx)
+					{
+						if (opt_asset->symbol.find("ERC") != opt_asset->symbol.npos)
+						{
+							auto& asset_db = get_index_type<asset_index>().indices().get<by_symbol>();
+							auto asset_eth = asset_db.find("ETH");
+							fee[withop.asset_id] -= fc::variant(crosschain_fee).as_double();
+							crosschain_fee = asset_eth->amount_to_string(asset_eth->dynamic_data(*this).fee_pool);
+							temp_amount = fc::variant(withop.amount).as_double();
+							erc_collect_crosschain_fee[withop.asset_id] += fc::variant(crosschain_fee).as_double();
+						}
+					}
 					if (temp_map.count(withop.crosschain_account)>0){
 						temp_map[withop.crosschain_account] = fc::to_string(fc::to_double(temp_map[withop.crosschain_account]) + temp_amount).c_str();
 					}
@@ -549,11 +590,27 @@ namespace graphene {
 					temp_map.insert(std::make_pair(key,value));
 					}*/
 					//the average fee is 0.001
-					FC_ASSERT(fee.count(one_asset.first)>0);
+					
 					char temp_fee[1024];
-					string format = "%."+fc::variant(opt_asset->precision).as_string()+"f";
-					std::sprintf(temp_fee, format.c_str(), fee[one_asset.first]);
-					auto t_fee = opt_asset->amount_from_string(graphene::utilities::remove_zero_for_str_amount(temp_fee));
+					string format = "%." + fc::variant(opt_asset->precision).as_string() + "f";
+					if (head_block_num() > XWC_CROSSCHAIN_ERC_FORK_HEIGHT && !exist_fork_erc_trx)
+					{
+						if (opt_asset->symbol.find("ERC") != opt_asset->symbol.npos)
+						{
+							FC_ASSERT(erc_collect_crosschain_fee.count(one_asset.first) > 0);
+                            auto& asset_db = get_index_type<asset_index>().indices().get<by_symbol>();
+							auto asset_eth = asset_db.find("ETH");
+							string format = "%." + fc::variant(asset_eth->precision).as_string() + "f";
+							std::sprintf(temp_fee, format.c_str(), erc_collect_crosschain_fee[one_asset.first]);
+						}else {
+							FC_ASSERT(fee.count(one_asset.first) > 0);
+							std::sprintf(temp_fee, format.c_str(), fee[one_asset.first]);
+						}
+					} else {
+						FC_ASSERT(fee.count(one_asset.first) > 0);
+						std::sprintf(temp_fee, format.c_str(), fee[one_asset.first]);
+					}
+					
 					char temp_amount[1024];
 					for (auto& item : one_asset.second)
 					{
@@ -585,9 +642,7 @@ namespace graphene {
 						trx_op.withdraw_source_trx = hdl->create_multisig_transaction(multi_account_obj.bind_account_hot, one_asset.second, asset_symbol, memo_info[asset_symbol]);
 						hdtrxs = hdl->turn_trxs(trx_op.withdraw_source_trx);
 					}
-					memset(temp_fee,0,1024);
-					std::sprintf(temp_fee, format.c_str(), hdtrxs.fee);
-					auto cross_fee = opt_asset->amount_from_string(graphene::utilities::remove_zero_for_str_amount(temp_fee));
+
 					trx_op.ccw_trx_ids = ccw_trx_ids[asset_symbol];
 					//std::cout << trx_op.ccw_trx_id.str() << std::endl;
 					trx_op.miner_broadcast = miner;
@@ -596,7 +651,30 @@ namespace graphene {
 					optional<miner_object> miner_iter = get(miner);
 					optional<account_object> account_iter = get(miner_iter->miner_account);
 					trx_op.miner_address = account_iter->addr;
-					trx_op.crosschain_fee = t_fee-cross_fee;
+					if (head_block_num() > XWC_CROSSCHAIN_ERC_FORK_HEIGHT && !exist_fork_erc_trx)
+					{
+						if (opt_asset->symbol.find("ERC") != opt_asset->symbol.npos)
+						{
+							auto& asset_db = get_index_type<asset_index>().indices().get<by_symbol>();
+							auto asset_eth = asset_db.find("ETH");
+							auto erc_t_fee = asset_eth->amount_from_string(graphene::utilities::remove_zero_for_str_amount(temp_fee));
+							trx_op.crosschain_fee = erc_t_fee;
+						}
+						else {
+							auto t_fee = opt_asset->amount_from_string(graphene::utilities::remove_zero_for_str_amount(temp_fee));
+							memset(temp_fee, 0, 1024);
+							std::sprintf(temp_fee, format.c_str(), hdtrxs.fee);
+							auto cross_fee = opt_asset->amount_from_string(graphene::utilities::remove_zero_for_str_amount(temp_fee));
+							trx_op.crosschain_fee = t_fee - cross_fee;
+						}
+					}
+					else {
+						auto t_fee = opt_asset->amount_from_string(graphene::utilities::remove_zero_for_str_amount(temp_fee));
+						memset(temp_fee, 0, 1024);
+						std::sprintf(temp_fee, format.c_str(), hdtrxs.fee);
+						auto cross_fee = opt_asset->amount_from_string(graphene::utilities::remove_zero_for_str_amount(temp_fee));
+						trx_op.crosschain_fee = t_fee - cross_fee;
+					}
 					signed_transaction tx;
 
 					uint32_t expiration_time_offset = 0;

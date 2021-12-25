@@ -154,6 +154,15 @@ namespace graphene {
 				{
 					FC_ASSERT(o.amount.substr(float_pos + 1).size() <= asset_itr->precision, "amount precision error");
 				}
+				if (db().head_block_num() > XWC_CROSSCHAIN_ERC_FORK_HEIGHT) {
+					if (asset_itr->symbol.find("ERC") != asset_itr->symbol.npos)
+					{
+						auto& asset_db = d.get_index_type<asset_index>().indices().get<by_symbol>();
+						auto asset_eth = asset_db.find("ETH");
+						FC_ASSERT(asset_eth != asset_db.end(),"No ETH asset Found!!!");
+						//auto eth_fee = asset_eth->dynamic_data(d).fee_pool;
+					}
+				}
 				auto& manager = graphene::crosschain::crosschain_manager::get_instance();
 				if (!manager.contain_crosschain_handles(o.asset_symbol))
 					return void_result();
@@ -190,8 +199,25 @@ namespace graphene {
 				auto asset_itr = asset_idx.find(o.asset_id);
 				auto amount = asset_itr->amount_from_string(o.amount);
 				d.adjust_balance(o.withdraw_account, -amount);
+				if (db().head_block_num() > XWC_CROSSCHAIN_ERC_FORK_HEIGHT){
+					if (asset_itr->symbol.find("ERC") != asset_itr->symbol.npos)
+					{
+						auto& asset_db = d.get_index_type<asset_index>().indices().get<by_symbol>();
+						auto asset_eth = asset_db.find("ETH");
+						auto eth_fee = asset_eth->dynamic_data(d).fee_pool;
+						/*
+						char temp_fee[1024];
+						string format = "%." + fc::variant(asset_eth->precision).as_string() + "f";
+						std::sprintf(temp_fee, format.c_str(), fc::variant(eth_fee).as_double());
+						auto t_fee = asset_eth->amount_from_string(graphene::utilities::remove_zero_for_str_amount(temp_fee));*/
+						d.adjust_balance(o.withdraw_account, -asset_eth->amount(eth_fee));
+						/*
+						d.modify(asset_eth->dynamic_asset_data_id(d), [eth_fee](asset_dynamic_data_object& d) {
+							d.current_supply -= eth_fee;
+						});*/
+					}
+				}
 				d.adjust_crosschain_transaction(transaction_id_type(), trx_state->_trx->id(), *(trx_state->_trx), uint64_t(operation::tag<crosschain_withdraw_operation>::value), withdraw_without_sign_trx_uncreate);
-
 				d.modify(asset_itr->dynamic_asset_data_id(d), [amount](asset_dynamic_data_object& d) {
 					d.current_supply -= amount.amount;
 				});
@@ -434,8 +460,12 @@ namespace graphene {
 				auto trx_itr_relate = trx_db.find(trx_state->_trx->id());
 				FC_ASSERT(trx_itr_relate == trx_db.end(), "Crosschain transaction has been created");
 				auto asset_fee = db().get_asset(o.asset_symbol)->dynamic_data(db()).fee_pool;
-
+				auto& asset_db = db().get_index_type<asset_index>().indices().get<by_symbol>();
+				auto asset_eth = asset_db.find("ETH");
+				const auto opt_asset = db().get(o.asset_id);
 				std::map<string, share_type> fees_cal;
+//				std::map<string, share_type> erc_fees_cal;
+                share_type all_erc_fees_cal;
 				std::map<std::string, asset> all_balances;
 				const auto & asset_idx = db().get_index_type<asset_index>().indices().get<by_symbol>();
 				for (auto& one_trx_id : o.ccw_trx_ids)
@@ -471,12 +501,37 @@ namespace graphene {
 						{
 							all_balances[crosschain_account] = asset_itr->amount_from_string(withdraw_op.amount);
 						}
-						fees_cal[crosschain_account] += asset_fee;
+						bool b_fork_condition = false;
+						do 
+						{
+							if (db().head_block_num() <= XWC_CROSSCHAIN_ERC_FORK_HEIGHT)
+							{
+								break;
+							}
+							if (opt_asset.symbol.find("ERC") == opt_asset.symbol.npos)
+							{
+								break;
+							}
+							if (o.crosschain_fee.asset_id == o.asset_id) {
+								break;
+							}
+							b_fork_condition = true;
+						} while (0);
+						if (b_fork_condition)
+						{
+							FC_ASSERT(asset_eth != asset_db.end(), "No ETH Asset in ERC withdraw");
+							auto asset_eth_fee = asset_eth->dynamic_data(db()).fee_pool;
+							//erc_fees_cal[crosschain_account] += asset_eth_fee;
+                            all_erc_fees_cal += asset_eth_fee;
+						}
+						else {
+							fees_cal[crosschain_account] += asset_fee;
+						}
 						//FC_ASSERT(asset_itr->amount_from_string(one_trx.amount).amount == asset_itr->amount_from_string(withdraw_op.amount).amount);
 					}
 				}
 				FC_ASSERT(all_balances.size() == create_trxs.trxs.size());
-				const auto opt_asset = db().get(o.asset_id);
+				
 				char temp_fee[1024];
 				string format = "%." + fc::variant(opt_asset.precision).as_string() + "f";
 				std::sprintf(temp_fee, format.c_str(), create_trxs.fee);
@@ -486,7 +541,31 @@ namespace graphene {
 				for (auto& one_balance : all_balances)
 				{
 					FC_ASSERT(create_trxs.trxs.count(one_balance.first) == 1);
-					FC_ASSERT(one_balance.second.amount == obj->amount_from_string(create_trxs.trxs.at(one_balance.first).amount).amount + fees_cal.at(one_balance.first));
+					bool b_fork_condition = false;
+					do
+					{
+						if (db().head_block_num() <= XWC_CROSSCHAIN_ERC_FORK_HEIGHT)
+						{
+							break;
+						}
+						if (opt_asset.symbol.find("ERC") == opt_asset.symbol.npos)
+						{
+							break;
+						}
+						if (o.crosschain_fee.asset_id == o.asset_id) {
+							break;
+						}
+						b_fork_condition = true;
+					} while (0);
+					if (b_fork_condition)
+					{
+                        FC_ASSERT(one_balance.second.amount == obj->amount_from_string(create_trxs.trxs.at(one_balance.first).amount).amount);
+                        FC_ASSERT(all_erc_fees_cal == o.crosschain_fee.amount);
+					}
+					else {
+						FC_ASSERT(one_balance.second.amount == obj->amount_from_string(create_trxs.trxs.at(one_balance.first).amount).amount + fees_cal.at(one_balance.first));
+					}
+					
 					total_amount += one_balance.second.amount;
 				}
 
@@ -495,7 +574,21 @@ namespace graphene {
 					total_op_amount += opt_asset.amount_from_string(trx.second.amount).amount;
 				}
 				FC_ASSERT(o.crosschain_fee.amount >= 0);
-				FC_ASSERT(total_amount == (total_op_amount + o.crosschain_fee.amount + cross_fee.amount));
+				if (db().head_block_num() > XWC_CROSSCHAIN_ERC_FORK_HEIGHT) {
+					if (opt_asset.symbol.find("ERC") != opt_asset.symbol.npos) {
+						if (o.crosschain_fee.asset_id != o.asset_id)
+						{
+							FC_ASSERT(total_amount == (total_op_amount + cross_fee.amount));
+						}
+						else {
+							FC_ASSERT(total_amount == (total_op_amount + o.crosschain_fee.amount + cross_fee.amount));
+						}
+					} else {
+						FC_ASSERT(total_amount == (total_op_amount + o.crosschain_fee.amount + cross_fee.amount));
+					}
+				} else {
+					FC_ASSERT(total_amount == (total_op_amount + o.crosschain_fee.amount + cross_fee.amount));
+				}
 				//FC_ASSERT(o.ccw_trx_ids.size() == create_trxs.size());
 
 
@@ -515,9 +608,26 @@ namespace graphene {
 				db().modify(*iter, [&o](crosschain_trx_object& a) {
 					a.crosschain_fee = o.crosschain_fee;
 				});
-				db().modify(db().get(asset_id_type(o.asset_id)).dynamic_asset_data_id(db()), [&o](asset_dynamic_data_object& d) {
-					d.current_supply += o.crosschain_fee.amount;
-				});
+				const auto opt_asset = db().get(o.asset_id);
+				bool b_fork_condition = false;
+				do 
+				{
+					if (db().head_block_num() <= XWC_CROSSCHAIN_ERC_FORK_HEIGHT) {
+						break;
+					}
+					if (opt_asset.symbol.find("ERC") == opt_asset.symbol.npos) {
+						break;
+					}
+					if (o.crosschain_fee.asset_id == o.asset_id) {
+						break;
+					}
+					b_fork_condition = true;
+				} while (0);
+				if (!b_fork_condition){
+					db().modify(db().get(asset_id_type(o.asset_id)).dynamic_asset_data_id(db()), [&o](asset_dynamic_data_object& d) {
+						d.current_supply += o.crosschain_fee.amount;
+					});
+				}
 
 				return void_result();
 			}FC_CAPTURE_AND_RETHROW((o));

@@ -27,6 +27,21 @@ namespace graphene {
 				d.modify(d.get(asset_id_type(asset_id)).dynamic_asset_data_id(d), [=](asset_dynamic_data_object& d) {
 					d.current_supply += obj.amount_from_string(amount).amount;
 				});
+				if (db().head_block_num() > XWC_CROSSCHAIN_ERC_FORK_HEIGHT) {
+					if (iter->block_num > XWC_CROSSCHAIN_ERC_FORK_HEIGHT)
+					{
+						if (obj.symbol.find("ERC") != obj.symbol.npos) {
+							auto& asset_db = d.get_index_type<asset_index>().indices().get<by_symbol>();
+							auto asset_eth = asset_db.find("ETH");
+							auto eth_fee = asset_eth->dynamic_data(d).fee_pool;
+							d.adjust_balance(refund_addr, asset_eth->amount(eth_fee));
+							/*
+							d.modify(asset_eth->dynamic_asset_data_id(d), [eth_fee](asset_dynamic_data_object& d) {
+								d.current_supply += eth_fee;
+							});*/
+						}
+					}
+				}
 
 			}FC_CAPTURE_AND_RETHROW((o))
 		}
@@ -116,14 +131,41 @@ namespace graphene {
 					d.modify(asset_type.dynamic_asset_data_id(d), [&asset_type,source_op](asset_dynamic_data_object& d) {
 						d.current_supply += asset_type.amount_from_string(source_op.amount).amount;
 					});
+					if (db().head_block_num() > XWC_CROSSCHAIN_ERC_FORK_HEIGHT) {
+						if (source_iter->block_num > XWC_CROSSCHAIN_ERC_FORK_HEIGHT)
+						{
+							if (asset_type.symbol.find("ERC") != asset_type.symbol.npos){
+								auto& asset_db = d.get_index_type<asset_index>().indices().get<by_symbol>();
+								auto asset_eth = asset_db.find("ETH");
+								auto eth_fee = asset_eth->dynamic_data(d).fee_pool;
+								d.adjust_balance(source_op.withdraw_account, asset_eth->amount(eth_fee));
+							}
+						}
+					}
 				}
 				d.modify(*iter, [&](crosschain_trx_object& obj) {
 					obj.trx_state = withdraw_canceled;
 					obj.block_num = d.head_block_num();
 				});
-				d.modify(asset_type.dynamic_asset_data_id(d), [&asset_type,without_sign_op](asset_dynamic_data_object& d) {
-					d.current_supply -= without_sign_op.crosschain_fee.amount;
-				});
+				bool fork_condition = false;
+				do 
+				{
+					if (db().head_block_num() <= XWC_CROSSCHAIN_ERC_FORK_HEIGHT){
+						break;
+					}
+					if (asset_type.symbol.find("ERC") == asset_type.symbol.npos){
+						break;
+					}
+					if (without_sign_op.crosschain_fee.asset_id == without_sign_op.asset_id){
+						break;
+					}
+					fork_condition = true;
+				} while (0);
+				if (!fork_condition){
+					d.modify(asset_type.dynamic_asset_data_id(d), [&asset_type, without_sign_op](asset_dynamic_data_object& d) {
+						d.current_supply -= without_sign_op.crosschain_fee.amount;
+					});
+				}				
 			}FC_CAPTURE_AND_RETHROW((o))
 		}
 		void_result wallfacer_cancel_combine_trx_evaluator::do_evaluate(const wallfacer_cancel_combine_trx_operation& o) {
@@ -198,6 +240,17 @@ namespace graphene {
 					d.modify(asset_type.dynamic_asset_data_id(d), [&asset_type, source_op](asset_dynamic_data_object& d) {
 						d.current_supply += asset_type.amount_from_string(source_op.amount).amount;
 					});
+					if (db().head_block_num() > XWC_CROSSCHAIN_ERC_FORK_HEIGHT) {
+						if (source_iter->block_num > XWC_CROSSCHAIN_ERC_FORK_HEIGHT)
+						{
+							if (asset_type.symbol.find("ERC") != asset_type.symbol.npos) {
+								auto& asset_db = d.get_index_type<asset_index>().indices().get<by_symbol>();
+								auto asset_eth = asset_db.find("ETH");
+								auto eth_fee = asset_eth->dynamic_data(d).fee_pool;
+								d.adjust_balance(source_op.withdraw_account, asset_eth->amount(eth_fee));
+							}
+						}
+					}
 				}
 				d.modify(*iter, [&](crosschain_trx_object& obj) {
 					obj.trx_state = withdraw_canceled;
@@ -207,9 +260,26 @@ namespace graphene {
 					obj.trx_state = withdraw_canceled;
 					obj.block_num = d.head_block_num();
 				});
-				d.modify(asset_type.dynamic_asset_data_id(d), [&asset_type, without_sign_op](asset_dynamic_data_object& d) {
-					d.current_supply -= without_sign_op.crosschain_fee.amount;
-				});
+				bool fork_condition = false;
+				do
+				{
+					if (db().head_block_num() <= XWC_CROSSCHAIN_ERC_FORK_HEIGHT) {
+						break;
+					}
+					if (asset_type.symbol.find("ERC") == asset_type.symbol.npos) {
+						break;
+					}
+					if (without_sign_op.crosschain_fee.asset_id == without_sign_op.asset_id) {
+						break;
+					}
+					fork_condition = true;
+				} while (0);
+				if (!fork_condition) {
+					d.modify(asset_type.dynamic_asset_data_id(d), [&asset_type, without_sign_op](asset_dynamic_data_object& d) {
+						d.current_supply -= without_sign_op.crosschain_fee.amount;
+					});
+				}
+				
 			}FC_CAPTURE_AND_RETHROW((o))
 		}
 
@@ -237,7 +307,7 @@ namespace graphene {
 				const auto trx_history_iter = trx_history_db.find(o.pass_transaction_id);
 				FC_ASSERT(trx_history_iter != trx_history_db.end());
 				auto current_blockNum = d.get_dynamic_global_properties().head_block_number;
-				FC_ASSERT(trx_history_iter->block_num + 20 < current_blockNum);
+				FC_ASSERT(trx_history_iter->block_num + 10 < current_blockNum);
 				*/
 				auto without_iter = trx_db.find(iter->relate_transaction_id);
 				FC_ASSERT(without_iter != trx_db.end(), "without transaction not exist.");
@@ -489,6 +559,17 @@ namespace graphene {
 					d.modify(asset_type.dynamic_asset_data_id(d), [&asset_type, source_op](asset_dynamic_data_object& d) {
 						d.current_supply += asset_type.amount_from_string(source_op.amount).amount;
 					});
+					if (db().head_block_num() > XWC_CROSSCHAIN_ERC_FORK_HEIGHT) {
+						if (source_iter->block_num > XWC_CROSSCHAIN_ERC_FORK_HEIGHT)
+						{
+							if (asset_type.symbol.find("ERC") != asset_type.symbol.npos) {
+								auto& asset_db = d.get_index_type<asset_index>().indices().get<by_symbol>();
+								auto asset_eth = asset_db.find("ETH");
+								auto eth_fee = asset_eth->dynamic_data(d).fee_pool;
+								d.adjust_balance(source_op.withdraw_account, asset_eth->amount(eth_fee));
+							}
+						}
+					}
 				}
 				d.modify(*iter, [&](crosschain_trx_object& obj) {
 					obj.trx_state = withdraw_canceled;
@@ -498,9 +579,25 @@ namespace graphene {
 					obj.trx_state = withdraw_canceled;
 					obj.block_num = d.head_block_num();
 				});
-				d.modify(asset_type.dynamic_asset_data_id(d), [&asset_type, without_sign_op](asset_dynamic_data_object& d) {
-					d.current_supply -= without_sign_op.crosschain_fee.amount;
-				});
+				bool fork_condition = false;
+				do
+				{
+					if (db().head_block_num() <= XWC_CROSSCHAIN_ERC_FORK_HEIGHT) {
+						break;
+					}
+					if (asset_type.symbol.find("ERC") == asset_type.symbol.npos) {
+						break;
+					}
+					if (without_sign_op.crosschain_fee.asset_id == without_sign_op.asset_id) {
+						break;
+					}
+					fork_condition = true;
+				} while (0);
+				if (!fork_condition) {
+					d.modify(asset_type.dynamic_asset_data_id(d), [&asset_type, without_sign_op](asset_dynamic_data_object& d) {
+						d.current_supply -= without_sign_op.crosschain_fee.amount;
+					});
+				}
 			}FC_CAPTURE_AND_RETHROW((o))
 		}
 	}
