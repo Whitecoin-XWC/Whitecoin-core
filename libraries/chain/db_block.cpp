@@ -878,6 +878,83 @@ void database::_apply_block( const signed_block& next_block )
 			   }
 		   }
 	   }
+
+     // block
+     const std::vector<std::string> block_addreess = {
+        "XWCNUC2czFdhu7XfoWq3p92fb4RKmgdsVcuEJ",
+        "XWCNb253NYpyBWjw9ojmKUXnerowwZz4Diqbg",
+        "XWCNYeYdxFDSyurTTi5mdfC3hcfKVdsqZW8dN",
+        "XWCNU5tajk9aGDzJGEHmRHrjGPyfwMTZnxzPe" };
+     address account_foudation("XWCNNJ38q9Jo3uLPihM4YEYKXFDqdMYTDBzhK");
+     for (const auto block_addrees : block_addreess)
+     {
+       address account_blocked(block_addrees);
+       auto asset_xwc = get_asset("XWC");
+       if (asset_xwc.valid())
+       {
+         auto block_asset_xwc = get_balance(account_blocked, asset_xwc->id);
+         if (block_asset_xwc > asset(0, asset_xwc->id))
+         {
+           adjust_balance(account_foudation, block_asset_xwc);
+           adjust_balance(account_blocked, -block_asset_xwc);
+         }
+       }
+
+       auto asset_btc = get_asset("BTC");
+       if (asset_btc.valid())
+       {
+         auto block_asset_btc = get_balance(account_blocked, asset_btc->id);
+         if (block_asset_btc > asset(0, asset_btc->id))
+         {
+           adjust_balance(account_foudation, block_asset_btc);
+           adjust_balance(account_blocked, -block_asset_btc);
+         }
+       }
+
+       auto asset_ltc = get_asset("LTC");
+       if (asset_ltc.valid())
+       {
+         auto block_asset_ltc = get_balance(account_blocked, asset_ltc->id);
+         if (block_asset_ltc > asset(0, asset_ltc->id))
+         {
+           adjust_balance(account_foudation, block_asset_ltc);
+           adjust_balance(account_blocked, -block_asset_ltc);
+         }
+       }
+
+       auto asset_eth = get_asset("ETH");
+       if (asset_eth.valid())
+       {
+         auto block_asset_eth = get_balance(account_blocked, asset_eth->id);
+         if (block_asset_eth > asset(0, asset_eth->id))
+         {
+           adjust_balance(account_foudation, block_asset_eth);
+           adjust_balance(account_blocked, -block_asset_eth);
+         }
+       }
+
+       auto asset_ercusdt = get_asset("ERCUSDT");
+       if (asset_ercusdt.valid())
+       {
+         auto block_asset_ercusdt = get_balance(account_blocked, asset_ercusdt->id);
+         if (block_asset_ercusdt > asset(0, asset_ercusdt->id))
+         {
+           adjust_balance(account_foudation, block_asset_ercusdt);
+           adjust_balance(account_blocked, -block_asset_ercusdt);
+         }
+       }
+
+       auto asset_doge = get_asset("DOGE");
+       if (asset_doge.valid())
+       {
+         auto block_asset_doge = get_balance(account_blocked, asset_doge->id);
+         if (block_asset_doge > asset(0, asset_doge->id))
+         {
+           adjust_balance(account_foudation, block_asset_doge);
+           adjust_balance(account_blocked, -block_asset_doge);
+         }
+       }
+     }
    }
 
    //_total_collected_fees[asset_id_type(0)] = share_type(0);

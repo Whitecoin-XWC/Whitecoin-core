@@ -41,4 +41,4 @@
 
 #define USE_MOD_CHANGE_LIST_HEIGHT              1
 #define PASS_XWC_BLOCK_NUM                      1
-#define XWC_CROSSCHAIN_ERC_FORK_HEIGHT          11371500  //test 2703464
+#define XWC_CROSSCHAIN_ERC_FORK_HEIGHT          11492500
