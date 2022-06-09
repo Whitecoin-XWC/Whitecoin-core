@@ -16,6 +16,8 @@
 #include <fc/crypto/aes.hpp>
 #include <graphene/wallet/wallet.hpp>
 
+#include "../common.hpp"
+
 
 // 
 // std::string key_to_compressed_wif(const fc::sha256& secret)
