@@ -36,6 +36,8 @@
 #include <graphene/chain/transaction_object.hpp>
 #include <iostream>
 
+#include "../common.hpp"
+
 using namespace graphene::miner_plugin;
 using std::string;
 using std::vector;
@@ -110,8 +112,8 @@ void miner_plugin::plugin_set_program_options(
     ("miner-id,w", bpo::value<vector<string>>()->composing()->multitoken(),
     ("ID of miner controlled by this node (e.g. " + miner_id_example + ", quotes are required, may specify one times)").c_str())
     ("private-key", bpo::value<string>()->composing()->DEFAULT_VALUE_VECTOR(vec), "Tuple of [PublicKey, WIF private key] (just append)")
-    ("crosschain-ip,w", bpo::value<string>()->composing()->default_value("112.5.37.213"))
-    ("crosschain-port,w", bpo::value<string>()->composing()->default_value("5005"))
+    ("crosschain-ip,w", bpo::value<string>()->composing()->default_value(XWC_MIDWARE_IP))
+    ("crosschain-port,w", bpo::value<string>()->composing()->default_value(XWC_MIDWARE_PORT))
     ("chain-type,w", bpo::value<string>()->composing()->DEFAULT_VALUE_VECTOR(chain_type), (string(" chain-type for crosschains  (e.g. [\"BTC\"], quotes are required,  specify one times)")).c_str())
     ;
 

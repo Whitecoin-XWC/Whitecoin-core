@@ -10,6 +10,9 @@
 #include <fc/thread/scoped_lock.hpp>
 #include <fc/asio.hpp>
 #include <fc/network/resolve.hpp>
+
+#include "../common.hpp"
+
 namespace graphene {
 	namespace crosschain {
 
@@ -846,9 +849,11 @@ namespace graphene {
 					}
 					FC_ASSERT(ep_idx >= 0 && ep_idx < ep_count);
 					connect_counts[midware_eps[ep_idx]].first += 1;
-					//µ÷ÕûË³Ðò
-					if (ep_idx != 0)
+
+					if (ep_idx != 0) {
 						swap(midware_eps[0], midware_eps[ep_idx]);
+					}
+					
 					return;
 				}
 				catch (...)
@@ -860,7 +865,7 @@ namespace graphene {
 					{
 						ep_idx = -1;
 						std::vector<fc::ip::endpoint> temp;
-						const static auto str = "112.5.37.213:5005";
+						const static auto str = XWC_MIDWARE_ENDPOINT;
 						temp.push_back(fc::ip::endpoint::from_string(str));
 						if (temp.size() != 0)
 							set_midwares(temp);

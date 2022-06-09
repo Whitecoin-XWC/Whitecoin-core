@@ -31,7 +31,7 @@
 #include <mutex>
 
 #define WITENESS_NODE_VERSION  "1.3.5"
-#define WITENESS_CFG_SIGNATURE "7C4B74BFEA5"
+#define WITENESS_CFG_SIGNATURE "7C4B74BFEA6"
 
 namespace graphene { namespace miner_plugin {
 
