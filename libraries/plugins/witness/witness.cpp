@@ -36,7 +36,7 @@
 #include <graphene/chain/transaction_object.hpp>
 #include <iostream>
 
-#include "../common.hpp"
+#include "../../common.hpp"
 
 using namespace graphene::miner_plugin;
 using std::string;
