@@ -62,6 +62,9 @@
 #include <graphene/crosschain/crosschain_impl.hpp>
 #include <graphene/crosschain/crosschain_interface_btc.hpp>
 #include <graphene/chain/contract_object.hpp>
+
+#include "../common.hpp"
+
 namespace graphene {
   namespace app {
     using net::item_hash_t;
@@ -78,8 +81,6 @@ namespace graphene {
     using std::vector;
 
     namespace bpo = boost::program_options;
-
-    #define XWC_MIDDLEWARE_ENDPOINT "112.5.37.213:5005"
 
     namespace detail {
 
@@ -206,44 +207,19 @@ namespace graphene {
             {
               // New node list https://list.xwc.com/p2p.txt
               vector<string> seeds = {
-                // AnXi mobile
-                "112.5.37.28:12345",
-                "112.5.37.28:12346",
-
-                // JiNan unicom
-                "123.129.217.68:12345",
-                "123.129.217.68:12346",
-
-                // XiaMen telecom
-                "110.80.134.19:12345",
-                "110.80.134.19:12346",
-
-                // AnXi telecom
-                "117.24.6.145:12345",
-                "117.24.6.145:12346",
-
-                // YangZhou mobile
-                "223.111.134.138:12345",
-                "223.111.134.138:12346",
-
-                // HK
-                "154.222.23.66:12345",
-                "154.222.23.66:12346",
-                "154.86.17.133:12345",
-                "154.209.69.80:12345",
-                "154.86.18.190:12345",
-
-                // Tokyo
-                "35.75.78.20:12345",
-                "35.75.78.20:12346",
-
-                // SG
-                "18.140.133.151:12345",
-                "18.140.133.151:12346",
-
-                // US
-                "54.177.86.70:12345",
-                "54.177.86.70:12346"
+                // HK own servers
+                // xwc_witness_0_0
+                "43.242.236.210:10100",
+                // xwc_witness_0_1
+                "43.242.236.210:10103",
+                // xwc_witness_1_0
+                "43.242.236.210:10106",
+                // xwc_witness_1_1
+                "43.242.236.210:10109",
+                // xwc_witness_2_0
+                "43.242.236.210:10112",
+                // xwc_witness_2_1
+                "43.242.236.210:10115"
               };
               for (const string& endpoint_string : seeds)
               {
@@ -443,7 +419,7 @@ namespace graphene {
                 }
                 else
                 {
-                  vector<fc::ip::endpoint> midware_sers = { fc::ip::endpoint::from_string(XWC_MIDDLEWARE_ENDPOINT) };
+                  vector<fc::ip::endpoint> midware_sers = { fc::ip::endpoint::from_string(XWC_MIDWARE_ENDPOINT) };
                   abstract_crosschain_interface::set_midwares_backup(midware_sers);
                 }
                 if (_options->count("midware_servers"))
@@ -469,7 +445,7 @@ namespace graphene {
                     }
                     else
                     {
-                      vector<fc::ip::endpoint> midware_sers = { fc::ip::endpoint::from_string(XWC_MIDDLEWARE_ENDPOINT) };
+                      vector<fc::ip::endpoint> midware_sers = { fc::ip::endpoint::from_string(XWC_MIDWARE_ENDPOINT) };
                       abstract_crosschain_interface::set_midwares(midware_sers);
                     }
                   }
@@ -1209,8 +1185,8 @@ namespace graphene {
         ("dbg-init-key", bpo::value<string>(), "Block signing key to use for init mineres, overrides genesis file")
         ("api-access", bpo::value<boost::filesystem::path>(), "JSON file specifying API permissions")
         ("min_gas_price", bpo::value<int>(), "Miner in this node would not pack contract trx which gas price to low")
-        ("midware_servers", bpo::value<string>()->composing()->default_value(string("[\"").append(XWC_MIDDLEWARE_ENDPOINT).append("\"]")), "")
-        ("midware_servers_backup", bpo::value<string>()->composing()->default_value(string("[\"").append(XWC_MIDDLEWARE_ENDPOINT).append("\"]")), "")
+        ("midware_servers", bpo::value<string>()->composing()->default_value(string("[\"").append(XWC_MIDWARE_ENDPOINT).append("\"]")), "")
+        ("midware_servers_backup", bpo::value<string>()->composing()->default_value(string("[\"").append(XWC_MIDWARE_ENDPOINT).append("\"]")), "")
         ;
 
       command_line_options.add(configuration_file_options);
@@ -1226,8 +1202,8 @@ namespace graphene {
         ("nop2plog", "Do not log p2p info")
         ("rewind-on-close", "rewind-on-close")
         ("genesis-timestamp", bpo::value<uint32_t>(), "Replace timestamp from genesis.json with current time plus this many seconds (experts only!)")
-        ("midware_servers", bpo::value<string>()->composing()->default_value(string("[\"").append(XWC_MIDDLEWARE_ENDPOINT).append("\"]")), "")
-        ("midware_servers_backup", bpo::value<string>()->composing()->default_value(string("[\"").append(XWC_MIDDLEWARE_ENDPOINT).append("\"]")), "")
+        ("midware_servers", bpo::value<string>()->composing()->default_value(string("[\"").append(XWC_MIDWARE_ENDPOINT).append("\"]")), "")
+        ("midware_servers_backup", bpo::value<string>()->composing()->default_value(string("[\"").append(XWC_MIDWARE_ENDPOINT).append("\"]")), "")
         ("need-secure", "no need to replay after being get interrupted exceptionally")
         ;
       command_line_options.add(_cli_options);
