@@ -207,19 +207,19 @@ namespace graphene {
             {
               // New node list https://list.xwc.com/p2p.txt
               vector<string> seeds = {
-                // HK own servers
-                // xwc_witness_0_0
-                "43.242.236.210:10100",
-                // xwc_witness_0_1
-                "43.242.236.210:10103",
-                // xwc_witness_1_0
-                "43.242.236.210:10106",
-                // xwc_witness_1_1
-                "43.242.236.210:10109",
-                // xwc_witness_2_0
-                "43.242.236.210:10112",
-                // xwc_witness_2_1
-                "43.242.236.210:10115"
+                // HK servers
+                "43.242.236.210:10103",  // hk xwc_witness_0_1                
+                "43.242.236.210:10106",  // hk xwc_witness_1_0                
+                "43.242.236.210:10112",  // hk xwc_witness_2_0                
+                "43.242.236.210:10115",  // hk xwc_witness_2_1
+
+                // SG servers
+                "42.61.91.90:22001", // sg xwc_witness_1_0
+                "42.61.91.90:22002", // sg xwc_witness_1_1
+                "42.61.91.90:22003", // sg xwc_witness_2_0
+                "42.61.91.90:22004", // sg xwc_witness_2_1
+                "42.61.91.90:22005", // sg xwc_witness_3_0
+                "42.61.91.90:22006"  // sg xwc_witness_3_1
               };
               for (const string& endpoint_string : seeds)
               {
