@@ -220,6 +220,7 @@ namespace graphene {
                 "42.61.91.90:22004", // sg xwc_witness_2_1
                 "42.61.91.90:22005", // sg xwc_witness_3_0
                 "42.61.91.90:22006"  // sg xwc_witness_3_1
+
               };
               for (const string& endpoint_string : seeds)
               {
